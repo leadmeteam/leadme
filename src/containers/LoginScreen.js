@@ -1,14 +1,23 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-function LoginScreen() {
+function LoginScreen(props) {
+    console.log(props);
     return (
-        <View>
+        <View style={styles.container}>
             <Text>
                 LoginScreen
-            </Text>    
+            </Text>
+            <Button title="탭바 가기" onPress={() => props.navigation.navigate('TabNavigator')} />
         </View>
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: 20
+    }
+})
 
 export default LoginScreen;
