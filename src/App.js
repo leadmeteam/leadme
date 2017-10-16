@@ -65,18 +65,9 @@ const App = StackNavigator(
       screen: TabNav
     }
   },
-<<<<<<< HEAD:src/App.js
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-=======
   {
     headerMode: 'float'
   }
 );
 
 export default App;
->>>>>>> Container:App.js
