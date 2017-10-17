@@ -12,7 +12,7 @@ import {
   GuideScreen,
   LoginScreen,
   MypageScreen
-} from './src/containers'
+} from './containers'
 
 const TabNav = TabNavigator(
   {

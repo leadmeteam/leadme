@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-function GuideScreen() {
+function GuideScreen(props) {
+    console.log(props);
     return (
         <View>
             <Text>
