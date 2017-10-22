@@ -1,10 +1,12 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import promiseMiddleware from 'redux-promise-middleware';
 
+import auth from '../ducks/auth.duck';
 import ui from '../ducks/ui.duck';
 
 const rootReducer = {
-    ui
+    auth,
+    ui,
 };
 
 const reducer = combineReducers(rootReducer);
