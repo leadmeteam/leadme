@@ -87,11 +87,6 @@ class LoginScreen extends Component {
                             console.log("Logged out.");
                             this.setState({ user : null });
                         }}
-                        onLoginFound={(data) => {
-                            console.log("Existing login found.");
-                            console.log(data);
-                            this.setState({ user : data.credentials });
-                        }}
                         onLoginNotFound={() => {
                             console.log("No user logged in.");
                             this.setState({ user : null });
