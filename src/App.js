@@ -16,20 +16,20 @@ import {
 
 const TabNav = TabNavigator(
   {
-    Guide: {
-      screen: GuideScreen,
-      path: 'guide',
-      navigationOptions: {
-        header: null,
-        title: '가이드'
-      }
-    },
     Feed: {
       screen: FeedScreen,
       path: 'feed',
       navigationOptions: {
         header: null,
         title: '피드'
+      }
+    },
+    Guide: {
+      screen: GuideScreen,
+      path: 'guide',
+      navigationOptions: {
+        header: null,
+        title: '가이드'
       }
     },
     Mypage: {
@@ -48,8 +48,12 @@ const TabNav = TabNavigator(
         fontSize: 14
       },
       showIcon: false,
-      animationEnabled: true
-    }
+      animationEnabled: true,
+      tabStyle: {
+        backgroundColor: '#ffa751'
+      }
+    },
+    lazy: true
   }
 );
 
