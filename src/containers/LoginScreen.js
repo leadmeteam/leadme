@@ -7,16 +7,29 @@ import {
     AsyncStorage,
     ActivityIndicator
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
+import moment from 'moment';
 
 import * as authDuck from '../ducks/auth.duck';
 
+const resetAction = (routeName) => NavigationActions.reset({
+    index: 0,
+    actions: [
+      NavigationActions.navigate({ routeName })
+    ]
+});
+
 class LoginScreen extends Component {
-    componentDidMount() {
-        this.getStorage();
+    componentWillMount() {
+        const isAccessTokenValid = this.getStorage();
+        if(isAccessTokenValid) {
+            this.props.navigation.dispatch(resetAction('TabNavigator'));
+        }
     }
+
     handleSubmit = async (data) => {
         const { AuthActions } = this.props;
         try {
@@ -34,19 +47,29 @@ class LoginScreen extends Component {
             let valueToken = await AsyncStorage.getItem('token');
             let expirationDate = await AsyncStorage.getItem('tokenExpired');
             // console.log(valueToken);
-            console.log(expirationDate);
+            let expireDayString = moment(expirationDate).format('YYYYMMDD');
+            
             let todayDate = new Date();
-            console.log(todayDate);
-            if (valueToken !== null) {
+            let dd = todayDate.getDate();
+            let mm = todayDate.getMonth()+1; //January is 0!
+            let yyyy = todayDate.getFullYear();
+            let todayString = `${yyyy}${mm}${dd}`;
+            
+            let parsedToday = parseInt(todayString, 10);
+            let parsedExpire = parseInt(expireDayString, 10);
+            
+            if(expireDayString <= todayString) {
+                return false;
+            } else if (valueToken !== null) {
                 // 로그인 정보 status 보내기.
                 return true;
             } else {
                 return false;
             }
         } catch (error) {
-            if(error) return false;
+            return false;
         }
-    };
+    }
 
     render() {
         return (
@@ -84,8 +107,7 @@ class LoginScreen extends Component {
                             console.log("Check permissions!");
                             console.log(data);
                         }}
-                    />}
-                    <Button title="탭바 가기" onPress={() => this.props.navigation.navigate('TabNavigator')} />    
+                    />}   
             </View>
         );
     }
