@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 import * as uiDuck from '../ducks/ui.duck';
 
 class FeedScreen extends Component {
+    handleShowBtn = () => {
+        const { UiActions } = this.props;
+        UiActions.showButton();
+    }
+
     render() {
-        console.log(this.props);
         return (
             <View style={styles.container}>
                 <Text>
                     FeedScreen
                 </Text>
+                <Button title="SHOW BUTTON" onPress={this.handleShowBtn} />
+                { this.props.visible ? <Text>나왔다</Text> : undefined }
             </View>
         );
     }
@@ -20,13 +26,14 @@ class FeedScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        marginTop: 20
     }
 });
 
 export default connect(
     state => ({
-        ui: state.ui.get('visible')
+        visible: state.ui.get('visible')
     }),
     dispatch => ({
         UiActions: bindActionCreators(uiDuck, dispatch)

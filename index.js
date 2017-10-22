@@ -12,4 +12,4 @@ const renderApp = () => {
     );
 };
 
-AppRegistry.registerComponent('leadme', () => renderApp);
+AppRegistry.registerComponent('leadme', () => renderApp); 
