@@ -23,7 +23,8 @@ const resetAction = (routeName) => NavigationActions.reset({
 });
 
 class LoginScreen extends Component {
-    componentWillMount() {
+    componentDidUpdate(prevState) {
+        console.log(this.state);
         const isAccessTokenValid = this.getStorage();
         if(isAccessTokenValid) {
             this.props.navigation.dispatch(resetAction('TabNavigator'));
@@ -86,6 +87,11 @@ class LoginScreen extends Component {
                         onLogout={() => {
                             console.log("Logged out.");
                             this.setState({ user : null });
+                        }}
+                        onLoginFound={(data) => {
+                            console.log('user already Logged in');
+                            console.log(data);
+                            this.handleSubmit(data.credentials);
                         }}
                         onLoginNotFound={() => {
                             console.log("No user logged in.");

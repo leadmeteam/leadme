@@ -21,13 +21,22 @@ StatusBar.setBarStyle('light-content', true);       // 상태바 글자 흰색
 // StatusBar.setBarStyle('dark-content', true);        // 상태바 글자 검은색
 
 class FeedScreen extends Component {
+    handleOnPress = () => {
+        console.log('pressed');
+    }
     render() {
         return (
             <View style={styles.feedContainer}>
-                    <Header name={"ios-search"} />
+                    <Header
+                        name={"ios-search"}
+                        title={"Feed"}
+                        handlePress={this.handleOnPress}
+                    />
                     <View style={styles.midContainer}>
                         <SideDate />
-                        <FeedList />
+                        <FeedList
+                            authInfo={this.props.authInfo}
+                        />
                         {/* <LinearGradient locations={[0,1]} colors={['rgba(255, 167, 81, 0)', 'rgba(255, 167, 81, 1)']} style={styles.gradient}>
                         </LinearGradient> */}
                     </View>
@@ -60,7 +69,8 @@ const styles = StyleSheet.create({
 
 export default connect(
     state => ({
-        visible: state.ui.get('visible')
+        visible: state.ui.get('visible'),
+        authInfo: state.auth.get('authInfo')
     }),
     dispatch => ({
         UiActions: bindActionCreators(uiDuck, dispatch)

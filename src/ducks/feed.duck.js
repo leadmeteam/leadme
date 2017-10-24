@@ -100,5 +100,14 @@ const initialState = fromJS({
 });
 
 export default function reducer(state = initialState, action) {
-    
+    switch(action.type) {
+        case `${POST_FEED}_PENDING`:
+            return state.mergeIn(['requests', 'postFeed'], fromJS(rs.pending));
+        case `${POST_FEED}_FULFILLED`:
+            return state.mergeIn(['requests', 'postFeed'], fromJS(rs.fulfilled));
+        case `${POST_FEED}_REJECTED`:
+            return state.mergeIn(['requests', 'postFeed'], fromJS(rs.rejected));
+        default:
+            return state;
+    }
 }

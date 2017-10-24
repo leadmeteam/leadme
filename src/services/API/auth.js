@@ -31,6 +31,7 @@ export const requestSignUp = (accessToken) => {
         accesstoken: accessToken
     }).then((res) => {
         setStorage(res.data._id);
+        console.log(res.data);
         return res;
     }).catch((err) => {
         if(err) throw err;

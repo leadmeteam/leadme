@@ -32,7 +32,9 @@ class FeedList extends Component {
                     />
                 }
             >
-                <FeedUpload />
+                <FeedUpload
+                    authInfo={this.props.authInfo}
+                />
                 <View style={styles.commentItems}>
                     <View style={styles.commentMidContainer}>
                         <View>

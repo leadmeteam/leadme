@@ -2,16 +2,16 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-function Header({name}) {
+function Header({handlePress, name, title}) {
     return (
         <View style={styles.subjectContainer}>
             <TouchableOpacity
                 style={styles.iconContainer}
-                onPress={() => console.log('pressed')}
+                onPress={handlePress}
             >
                 <Icon name={name} size={24} style={styles.icon} />
             </TouchableOpacity>
-            <Text style={styles.subjectStyle}>Feed</Text>
+            <Text style={styles.subjectStyle}>{title}</Text>
         </View>
     );
 }

@@ -7,6 +7,9 @@ import{
     TouchableHighlight
 } from 'react-native';
 
+import Header from '../Common/Header';
+import UploadForm from './UploadForm';
+
 class FeedUpload extends Component {
     constructor(props) {
         super(props);
@@ -29,16 +32,15 @@ class FeedUpload extends Component {
                         visible={this.state.modalVisible}
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         >
-                        <View style={{marginTop: 22}}>
-                            <View>
-                                <Text>Hello World!</Text>
-                                <TouchableHighlight onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible)
-                                }}>
-                                    <Text>Hide Modal</Text>
-                                </TouchableHighlight>
-
-                            </View>
+                        <View style={styles.modalContainer}>
+                            <Header
+                                name={"ios-arrow-back"}
+                                title={"Write new feed"}
+                                handlePress={() => this.setModalVisible(!this.state.modalVisible)}
+                            />
+                            <UploadForm
+                                authInfo={this.props.authInfo}
+                            />
                         </View>
                     </Modal>
                     <TouchableHighlight underlayColor="white" onPress={() => {
@@ -61,6 +63,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    modalContainer: {
+        backgroundColor: '#ffa751',
+        flex: 1,
+        paddingTop: 20
     }
 });
 
