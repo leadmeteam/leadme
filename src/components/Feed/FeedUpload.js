@@ -39,6 +39,9 @@ class FeedUpload extends Component {
                                 handlePress={() => this.setModalVisible(!this.state.modalVisible)}
                             />
                             <UploadForm
+                                closeModal={this.setModalVisible}
+                                postStatus={this.props.postStatus}
+                                FeedActions={this.props.FeedActions}
                                 authInfo={this.props.authInfo}
                             />
                         </View>

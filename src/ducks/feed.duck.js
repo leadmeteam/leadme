@@ -13,9 +13,9 @@ const POST_FEED_COMMENT = "feed/POST_FEED_COMMENT";
 const GET_FEED_COMMENT_LIST = "feed/GET_FEED_COMMENT_LIST";
 const REMOVE_FEED_COMMENT = "feed/REMOVE_FEED_COMMENT";
 
-export const postFeed = () => ({
+export const postFeed = (district, feedBody) => ({
     type: POST_FEED,
-    payload: feed.requestPostFeed()
+    payload: feed.requestPostFeed(district, feedBody)
 });
 
 export const getFirstFeedList = () => ({
@@ -96,6 +96,11 @@ const initialState = fromJS({
             ...rs.request
         }
     },
+    valid: {
+        firstFeedList: false,
+        newFeedList: false,
+        feedDetail: false
+    },
     feeds: []
 });
 
@@ -107,6 +112,15 @@ export default function reducer(state = initialState, action) {
             return state.mergeIn(['requests', 'postFeed'], fromJS(rs.fulfilled));
         case `${POST_FEED}_REJECTED`:
             return state.mergeIn(['requests', 'postFeed'], fromJS(rs.rejected));
+        case `${GET_FIRST_FEED_LIST}_PENDING`:
+            return state.mergeIn(['requests', 'getFirstFeedList'], fromJS(rs.pending));
+        case `${GET_FIRST_FEED_LIST}_FULFILLED`:
+            return state.mergeIn(['requests', 'getFirstFeedList'], fromJS(rs.fulfilled))
+                        .setIn(['valid', 'firstFeedList'], true)
+                        .set('feeds', fromJS(action.payload.data));
+        case `${GET_FIRST_FEED_LIST}_REJECTED`:
+            return state.mergeIn(['requests', 'getFirstFeedList'], fromJS(rs.rejected))
+                        .setIn(['valid', 'firstFeedList'], false);
         default:
             return state;
     }

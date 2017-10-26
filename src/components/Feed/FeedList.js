@@ -8,6 +8,7 @@ import {
     StyleSheet
 } from 'react-native';
 import FeedUpload from './FeedUpload';
+import FeedItem from './FeedItem';
 
 class FeedList extends Component {
     constructor(props) {
@@ -17,11 +18,43 @@ class FeedList extends Component {
             refreshing: false
         };
     }
-    handleRefresh = () => {
-        console.log("refresh called");
+
+    async componentDidMount() {
+        const { FeedActions } = this.props;
+        try {
+            await FeedActions.getFirstFeedList();
+        } catch (e) {
+            if(e) throw e;
+        }
+    }
+    
+    handleRefresh = async () => {
+        const { FeedActions } = this.props;
+        try {
+            await FeedActions.getFirstFeedList();
+        } catch (e) {
+            if(e) throw e;
+        }
+    }
+
+    renderFeeds = (datas) => {
+        const mappedFeed = datas.map((feed, index) => {
+            return <FeedItem
+                        key={feed._id + ',' + index}
+                        index={index}
+                        feed={feed}
+                        onFeedPress={this.props.onFeedPress}
+                        feedScale={this.props.feedScale}
+                        currentIndex={this.props.currentIndex}
+                    />;
+        });
+
+        return mappedFeed;
     }
 
     render() {
+        const emptyComponent = undefined;
+
         return (
             <ScrollView
                 style={styles.commentContainer}
@@ -33,97 +66,11 @@ class FeedList extends Component {
                 }
             >
                 <FeedUpload
+                    postStatus={this.props.postStatus}
+                    FeedActions={this.props.FeedActions}
                     authInfo={this.props.authInfo}
                 />
-                <View style={styles.commentItems}>
-                    <View style={styles.commentMidContainer}>
-                        <View>
-                            <Image
-                                source={require('../../imgs/profile_image.png')}
-                                style={styles.commentPhoto}
-                            />
-                        </View>
-                        <View style={styles.commentTitle}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.commentName}>Mr.Guide Lee</Text>
-                            </View>
-                            <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ Seoul, 성북구 안암동</Text>
-                                <Text style={styles.commentTime}>방금 전</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>저는 안암동에 사는 가이드입니다. 다들 안녕하세요! 좋은 하루 되세요~ 그리고 좋은 여행 약속드립니다. 저와 함께하는 여행은 꿀잼이니까 많은 기대 부탁드립니다!!!!!</Text>
-                    </View>
-                </View>
-                <View style={styles.commentItems}>
-                    <View style={styles.commentMidContainer}>
-                        <View>
-                            <Image
-                                source={require('../../imgs/profile_image.png')}
-                                style={styles.commentPhoto}
-                            />
-                        </View>
-                        <View style={styles.commentTitle}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.commentName}>Mr.Guide Lee</Text>
-                            </View>
-                            <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ Seoul, 성북구 안암동</Text>
-                                <Text style={styles.commentTime}>방금 전</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>저는 안암동에 사는 가이드입니다. 다들 안녕하세요! 좋은 하루 되세요~ 그리고 좋은 여행 약속드립니다. 저와 함께하는 여행은 꿀잼이니까 많은 기대 부탁드립니다!!!!!</Text>
-                    </View>
-                </View>
-                <View style={styles.commentItems}>
-                    <View style={styles.commentMidContainer}>
-                        <View>
-                            <Image
-                                source={require('../../imgs/profile_image.png')}
-                                style={styles.commentPhoto}
-                            />
-                        </View>
-                        <View style={styles.commentTitle}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.commentName}>Mr.Guide Lee</Text>
-                            </View>
-                            <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ Seoul, 성북구 안암동</Text>
-                                <Text style={styles.commentTime}>방금 전</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>저는 안암동에 사는 가이드입니다. 다들 안녕하세요! 좋은 하루 되세요~ 그리고 좋은 여행 약속드립니다. 저와 함께하는 여행은 꿀잼이니까 많은 기대 부탁드립니다!!!!!</Text>
-                    </View>
-                </View>
-                <View style={styles.commentItems}>
-                    <View style={styles.commentMidContainer}>
-                        <View>
-                            <Image
-                                source={require('../../imgs/profile_image.png')}
-                                style={styles.commentPhoto}
-                            />
-                        </View>
-                        <View style={styles.commentTitle}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.commentName}>Mr.Guide Lee</Text>
-                            </View>
-                            <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ Seoul, 성북구 안암동</Text>
-                                <Text style={styles.commentTime}>방금 전</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>저는 안암동에 사는 가이드입니다. 다들 안녕하세요! 좋은 하루 되세요~ 그리고 좋은 여행 약속드립니다. 저와 함께하는 여행은 꿀잼이니까 많은 기대 부탁드립니다!!!!!</Text>
-                    </View>
-                </View>
-                
+                { this.props.listValid.firstList ? this.renderFeeds(this.props.feeds) : emptyComponent }
             </ScrollView>
         );
     }

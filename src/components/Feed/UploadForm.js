@@ -59,8 +59,18 @@ class UploadForm extends Component {
         });
     };
 
-    handleUpload = () => {
-        console.log('upload pressed');
+    handleUpload = async () => {
+        const { FeedActions, closeModal } = this.props;
+        try {
+            await FeedActions.postFeed(this.state.address, this.state.feedBody);
+            if(this.props.postStatus.get('fetched')) {
+                closeModal(false);
+                // TODO: request New List
+                await FeedActions.getFirstFeedList();
+            }
+        } catch (e) {
+            if(e) throw e;
+        }
     }
 
     render() {
@@ -81,12 +91,15 @@ class UploadForm extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.uploadBtnWrapper}>
-                        <Button
-                            style={styles.uploadBtn}
-                            title="올리기"
-                            onPress={this.handleUpload}
-                            disabled={this.state.feedBody === '' ? true : false}
-                        />
+                        {
+                            this.props.postStatus.get('fetching') ? <ActivityIndicator /> :
+                            <Button
+                                style={styles.uploadBtn}
+                                title="올리기"
+                                onPress={this.handleUpload}
+                                disabled={this.state.feedBody === '' ? true : false}
+                            />
+                        }
                     </View>
                 </View>
                 <View style={styles.inputContainer}>
@@ -129,6 +142,7 @@ const styles = StyleSheet.create({
     },
     placeText: {
         fontSize: 10,
+        color: '#007AFF',
     },
     uploadBtnWrapper: {
         position: 'absolute',

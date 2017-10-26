@@ -1,22 +1,18 @@
 import { fromJS } from 'immutable';
 import { createAction } from 'redux-actions';
 
-const SHOW_BUTTON = "ui/SHOW_BUTTON";
-const HIDE_BUTTON = "ui/HIDE_BUTTON";
+const SET_FEED_INDEX = "ui/SET_FEED_INDEX";
 
-export const showButton = createAction(SHOW_BUTTON);
-export const hideButton = createAction(HIDE_BUTTON);
+export const setFeedIndex = createAction(SET_FEED_INDEX);
 
 const initialState = fromJS({
-    visible: false
+    currentIndex: null
 });
 
 export default function reducer(state = initialState, action) {
     switch(action.type) {
-        case SHOW_BUTTON:
-            return state.set('visible', true);
-        case HIDE_BUTTON:
-            return state.set('visible', false);
+        case SET_FEED_INDEX:
+            return state.set('currentIndex', action.payload.value);
         default:
             return state;
     }
