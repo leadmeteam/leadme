@@ -23,7 +23,8 @@ const resetAction = (routeName) => NavigationActions.reset({
 });
 
 class LoginScreen extends Component {
-    componentWillMount() {
+    componentDidUpdate(prevState) {
+        console.log(this.state);
         const isAccessTokenValid = this.getStorage();
         if(isAccessTokenValid) {
             this.props.navigation.dispatch(resetAction('TabNavigator'));
@@ -37,12 +38,14 @@ class LoginScreen extends Component {
             await AsyncStorage.setItem('token', data.token);
             await AsyncStorage.setItem('tokenExpired', data.tokenExpirationDate);
         } catch (e) {
+            console.log(e.response);
             if(e) throw e;
         }
     }
 
     // TODO LIST: expirationDate와 현재 날짜 비교하여 true false 판별 하기
     getStorage = async () => {
+        console.log(this.state);
         try {
             let valueToken = await AsyncStorage.getItem('token');
             let expirationDate = await AsyncStorage.getItem('tokenExpired');
@@ -72,6 +75,7 @@ class LoginScreen extends Component {
     }
 
     render() {
+        console.log(this.props);
         return (
             <View style={styles.container}>
                 { this.props.status.get('fetching') ? <ActivityIndicator /> :
@@ -86,6 +90,11 @@ class LoginScreen extends Component {
                         onLogout={() => {
                             console.log("Logged out.");
                             this.setState({ user : null });
+                        }}
+                        onLoginFound={(data) => {
+                            console.log('user already Logged in');
+                            console.log(data);
+                            this.handleSubmit(data.credentials);
                         }}
                         onLoginNotFound={() => {
                             console.log("No user logged in.");
@@ -113,7 +122,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20
     }
-})
+});
 
 export default connect(
     state => ({

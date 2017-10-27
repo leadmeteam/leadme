@@ -50,7 +50,8 @@ const TabNav = TabNavigator(
       showIcon: false,
       animationEnabled: true,
       tabStyle: {
-        backgroundColor: '#ffa751'
+        borderTopColor: '#ffa751',
+        borderTopWidth: 0.5
       }
     },
     lazy: true
