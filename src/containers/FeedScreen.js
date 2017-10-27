@@ -59,7 +59,7 @@ class FeedScreen extends Component {
             <View style={styles.feedContainer}>
                     <Header
                         name={"ios-search"}
-                        title={"Feed"}
+                        title={"FEED"}
                         handlePress={this.handleOnPress}
                     />
                     <View style={styles.midContainer}>
