@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AsyncStorage } from 'react-native';
 
-const ROOT_URL = "http://52.79.180.194:5000/api";
+const ROOT_URL = "http://52.79.174.252:5000/api";
 
 const getStorage = async () => {
     try {
@@ -25,10 +25,10 @@ export const requestPostFeed = async (district, feedBody) => {
             userId,
             district,
             feedBody
-        }).then((res) => {
+        }).then(res => {
             console.log(res.data);
             return res;
-        }).catch((err) => {
+        }).catch(err => {
             if(err) throw err;
         });
     } catch (e) {
@@ -38,10 +38,10 @@ export const requestPostFeed = async (district, feedBody) => {
 
 export const requestFirstFeedList = () => {
     return axios.get(`${ROOT_URL}/firstFeed`)
-    .then((res) => {
+    .then(res => {
         console.log(res.data);
         return res;
-    }).catch((err) => {
+    }).catch(err => {
         if(err) throw err;
     });
 }

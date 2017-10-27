@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AsyncStorage } from 'react-native';
 
-const ROOT_URL = "http://52.79.180.194:5000/api";
+const ROOT_URL = "http://52.79.174.252:5000/api";
 
 const setStorage = async (userId) => {
     try {
@@ -29,11 +29,11 @@ const getStorage = async () => {
 export const requestSignUp = (accessToken) => {
     return axios.post(`${ROOT_URL}/signup`, {
         accesstoken: accessToken
-    }).then((res) => {
+    }).then(res => {
         setStorage(res.data._id);
         console.log(res.data);
         return res;
-    }).catch((err) => {
+    }).catch(err => {
         if(err) throw err;
     });
 }

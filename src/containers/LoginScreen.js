@@ -38,12 +38,14 @@ class LoginScreen extends Component {
             await AsyncStorage.setItem('token', data.token);
             await AsyncStorage.setItem('tokenExpired', data.tokenExpirationDate);
         } catch (e) {
+            console.log(e.response);
             if(e) throw e;
         }
     }
 
     // TODO LIST: expirationDate와 현재 날짜 비교하여 true false 판별 하기
     getStorage = async () => {
+        console.log(this.state);
         try {
             let valueToken = await AsyncStorage.getItem('token');
             let expirationDate = await AsyncStorage.getItem('tokenExpired');
@@ -73,6 +75,7 @@ class LoginScreen extends Component {
     }
 
     render() {
+        console.log(this.props);
         return (
             <View style={styles.container}>
                 { this.props.status.get('fetching') ? <ActivityIndicator /> :
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20
     }
-})
+});
 
 export default connect(
     state => ({
