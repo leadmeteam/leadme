@@ -18,7 +18,7 @@ function Header({handlePress, name, title}) {
 
 const styles = StyleSheet.create({
     subjectContainer: {
-        flex: 0.13,
+        height: 77.5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

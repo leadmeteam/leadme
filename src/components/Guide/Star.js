@@ -53,7 +53,7 @@ function Star({star, rate}) {
                     <Icon name={star} size={18} style={styles.star} />
                     <Icon name={star} size={18} style={styles.star} />
                 </View>
-            );s
+            );
         default:
             return (
                 <View style={styles.starContainer}>
@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
         star: {
-            marginTop: 2,
-            marginBottom: 2,
+            marginTop: 4,
+            marginBottom: 4,
             color: '#ffa751'
         },
         unstar: {
-            marginTop: 2,
-            marginBottom: 2,
+            marginTop: 4,
+            marginBottom: 4,
             color: '#ddd'
         },
 });

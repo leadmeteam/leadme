@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingLeft: 8,
         paddingRight: 8,
-        backgroundColor: '#ffa751',
+        backgroundColor: '#6e7882',
     },
     midContainer: {
-        flex: 0.87,
+        flex: 1
     },
         modalContainer: {
             

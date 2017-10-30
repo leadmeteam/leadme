@@ -217,9 +217,9 @@ const styles = StyleSheet.create({
             flexDirection: 'row'
         },
             commentPhoto: {
-                width: 35,
-                height: 35,
-                borderRadius: 17.5
+                width: 36,
+                height: 36,
+                borderRadius: 18
             },
             commentTitle: {
                 flex: 1,
