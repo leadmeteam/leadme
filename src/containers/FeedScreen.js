@@ -84,13 +84,6 @@ class FeedScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    gradient: {
-        height: 30,
-        position: "absolute",
-        width: 312,
-        bottom: 0,
-        right: 0,
-    },
     feedContainer: {
         flex: 1,
         flexDirection: 'column',
@@ -102,6 +95,13 @@ const styles = StyleSheet.create({
     midContainer: {
         flex: 0.87,
         flexDirection: 'row',
+    },
+    gradient: {
+        height: 30,
+        position: "absolute",
+        width: 312,
+        bottom: 0,
+        right: 0,
     },
 });
 

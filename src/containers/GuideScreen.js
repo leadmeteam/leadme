@@ -30,17 +30,21 @@ class GuideScreen extends Component {
                     name={"ios-search"}
                     title={"GUIDE"}
                 />
-                <ModalDropdown
-                    style={styles.btnContainer}
-                    defaultIndex={"0"}
-                    defaultValue={
-                        <Text style={styles.txt}>
-                            평점순<Icon name="ios-arrow-down" color={"#fff"} />
-                        </Text>
-                    }
-                    options={['1', '2']}
-                />
-                <GuideList />  
+                <View style={styles.midContainer}>
+                    <View style={styles.modalContainer}>
+                        <ModalDropdown
+                            style={styles.btnContainer}
+                            defaultIndex={"0"}
+                            defaultValue={
+                                <Text style={styles.txt}>
+                                    별점순    <Icon name="ios-arrow-down" color={"#fff"} size={14} />
+                                </Text>
+                            }
+                            options={['1', '2']}
+                        />
+                    </View>
+                    <GuideList />
+                </View>
             </View>
         );
     }
@@ -55,21 +59,31 @@ const styles = StyleSheet.create({
         paddingRight: 8,
         backgroundColor: '#ffa751',
     },
-    btnContainer: {
-        width: 100,
-        alignSelf: 'flex-end',
-        marginRight: 16,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 30,
-        borderWidth: 1,
-        borderColor: '#fff',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+    midContainer: {
+        flex: 0.87,
     },
-    txt: {
-        color: '#fff'
-    }
+        modalContainer: {
+            
+        },
+            btnContainer: {
+                paddingTop: 5,
+                paddingBottom: 5,
+                marginRight: 5,
+                marginBottom: 10,
+                width: 100,
+                alignSelf: 'flex-end',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                borderRadius: 30,
+                borderWidth: 1.2,
+                borderColor: '#fff',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+            },
+                txt: {
+                    color: '#fff',
+                    fontSize: 14,
+                },
 });
 export default connect(
     state => ({
