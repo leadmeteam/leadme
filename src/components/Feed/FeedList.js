@@ -43,15 +43,13 @@ class FeedList extends Component {
             key={item._id + ',' + index}
             index={index}
             feed={item}
+            postStatus={this.props.postStatus.feedPost}
+            FeedActions={this.props.FeedActions}
             onFeedPress={this.props.onFeedPress}
             feedScale={this.props.feedScale}
             currentIndex={this.props.currentIndex}
         />
-    )
-
-    renderMoreFeeds = () => {
-        console.log('end reached');
-    }
+    );
 
     keyExtractor = (item, index) => item._id;
 
@@ -61,7 +59,7 @@ class FeedList extends Component {
         return (
             <View style={styles.commentContainer}>
                 <FeedUpload
-                    postStatus={this.props.postStatus}
+                    postStatus={this.props.postStatus.post}
                     FeedActions={this.props.FeedActions}
                     authInfo={this.props.authInfo}
                 />
@@ -75,7 +73,6 @@ class FeedList extends Component {
                             onRefresh={this.handleRefresh}
                         />
                     }
-                    onEndReached={this.renderMoreFeeds}
                 /> : emptyComponent }
                 
             </View>

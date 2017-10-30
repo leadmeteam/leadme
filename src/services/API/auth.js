@@ -27,7 +27,7 @@ const getStorage = async () => {
 };
 
 export const requestSignUp = (accessToken) => {
-    return axios.post(`${ROOT_URL}/signup`, {
+    return axios.post(`${ROOT_URL}/users/signup`, {
         accesstoken: accessToken
     }).then(res => {
         setStorage(res.data._id);

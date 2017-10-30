@@ -7,9 +7,11 @@ import {
     Button,
     Image,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    PixelRatio,
 } from 'react-native';
 import axios from 'axios';
+import ImagePicker from 'react-native-image-picker';
 
 class UploadForm extends Component {
     constructor(props) {
@@ -19,7 +21,9 @@ class UploadForm extends Component {
             address: '',
             loading: false,
             valid: true,
-            feedBody: ''
+            feedBody: '',
+            photoUrl: '',
+            photoSource: null,
         };
     }
 
@@ -62,7 +66,7 @@ class UploadForm extends Component {
     handleUpload = async () => {
         const { FeedActions, closeModal } = this.props;
         try {
-            await FeedActions.postFeed(this.state.address, this.state.feedBody);
+            await FeedActions.postFeed(this.state.address, this.state.feedBody, this.state.photoUrl);
             if(this.props.postStatus.get('fetched')) {
                 closeModal(false);
                 // TODO: request New List
@@ -71,6 +75,37 @@ class UploadForm extends Component {
         } catch (e) {
             if(e) throw e;
         }
+    }
+
+    selectPhotoTapped = () => {
+        const options = {
+            quality: 1.0,
+            maxWidth: 500,
+            maxHeight: 500,
+            storageOptions: {
+                skipBackup: true
+            }
+        };
+    
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+    
+            if (response.didCancel) {
+                console.log('User cancelled photo picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                let source = { uri: response.uri };
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                this.setState({
+                    photoSource: source,
+                    photoUrl: response.uri,
+                });
+            }
+        });
     }
 
     render() {
@@ -109,6 +144,13 @@ class UploadForm extends Component {
                         onChangeText={(text) => this.setState({feedBody: text})}
                         value={this.state.feedBody}
                     />
+                    <TouchableOpacity onPress={this.selectPhotoTapped}>
+                        <View style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
+                        { this.state.photoSource === null ? <Text>Select a Photo</Text> :
+                            <Image style={styles.avatar} source={this.state.photoSource} />
+                        }
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -155,7 +197,22 @@ const styles = StyleSheet.create({
         flex: 0.95,
         backgroundColor: 'white',
         marginTop: 16,
+    },
+    avatarContainer: {
+        borderColor: '#9B9B9B',
+        borderWidth: 1 / PixelRatio.get(),
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        position: 'absolute',
+        top: 200,
+        borderStyle: "dashed"
+    },
+    avatar: {
+        borderRadius: 30,
+        width: 300,
+        height: 200
     }
-})
+});
 
 export default UploadForm;

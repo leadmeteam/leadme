@@ -67,7 +67,7 @@ class FeedScreen extends Component {
                         <FeedList
                             onFeedPress={this.springAnim}
                             feedScale={this.springValue}
-                            postStatus={this.props.status.post}
+                            postStatus={this.props.status}
                             firstListStatus={this.props.status.firstList}
                             feeds={this.props.feeds}
                             listValid={this.props.valid}
@@ -109,7 +109,9 @@ export default connect(
     state => ({
         status: {
             post: state.feed.getIn(['requests', 'postFeed']),
-            firstList: state.feed.getIn(['requests', 'getFirstFeedList'])
+            firstList: state.feed.getIn(['requests', 'getFirstFeedList']),
+            feedPost: state.feed.getIn(['requests', 'postFeedComment']),
+            newList: state.feed.getIn(['requests', 'getNewFeedList']),
         },
         valid: {
             firstList: state.feed.getIn(['valid', 'firstFeedList']),

@@ -6,15 +6,21 @@ import {
     Image,
     StyleSheet,
     Modal,
+    AsyncStorage,
+    TouchableOpacity,
+    TouchableHighlight,
     TouchableWithoutFeedback,
     PanResponder,
 } from 'react-native';
+
+import clamp from 'clamp';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Material from 'react-native-vector-icons/MaterialIcons';
 
 import { TimeAgo } from '../';
-import clamp from 'clamp';
+import CommentItem from './CommentItem';
+import CommentUpload from './CommentUpload';
 
 const SWIPE_DOWN_THRESHOLD = 250;
 
@@ -24,6 +30,7 @@ class FeedItem extends Component {
 
         this.state = {
             modalVisible: false,
+            userId: '',
             transform: {
                 translateX: 0,
                 translateY: 0,
@@ -40,9 +47,9 @@ class FeedItem extends Component {
     componentWillMount() {
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => true,
-            onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+            onStartShouldSetPanResponderCapture: (evt, gestureState) => {},
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+            onMoveShouldSetPanResponderCapture: (evt, gestureState) => {},
             onPanResponderGrant: (evt, gestureState) => {
                 // The gesture has started. Show visual feedback so the user knows
                 // what is happening!
@@ -97,6 +104,17 @@ class FeedItem extends Component {
         });
     }
 
+    async componentDidMount() {
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            this.setState({
+                userId: userId
+            });
+        } catch (e) {
+            if(e) throw e;
+        }
+    }
+
     onModalShow = () => {
         this.setState({
             transform: {
@@ -106,10 +124,6 @@ class FeedItem extends Component {
         });
     }
 
-    feedPress = (e) => {
-        console.log(e.nativeEvent);
-    }
-
     toggleModal = (index) => {
         this.setState({
             modalVisible: !this.state.modalVisible
@@ -117,12 +131,55 @@ class FeedItem extends Component {
 
         this.props.onFeedPress(index);
     }
+    
+
+    likePress = async () => {
+        const { FeedActions } = this.props;
+        try {
+            await FeedActions.toggleLikeFeed(this.props.feed._id);
+            await FeedActions.getFirstFeedList();
+        } catch (e) {
+            if(e) throw e;
+        }
+        
+    }
+
+    renderComments = (comments) => {
+        let mappedData = comments.map((comment, index) => {
+            return (<CommentItem
+                        feedId={this.props.feed._id}
+                        FeedActions={this.props.FeedActions}
+                        closeModal={this.toggleModal}
+                        comment={comment}
+                        key={index}
+                    />);
+        });
+        
+        return mappedData;
+    }
+
+    commentSubmit = async (comment) => {
+        const { FeedActions } = this.props;
+        if(comment !== '') {
+            try {
+                await FeedActions.postFeedComment(this.props.feed._id, comment);
+                if(this.props.postStatus.get('fetched')) {
+                    // TODO: request New List
+                    await FeedActions.getFirstFeedList();
+                }
+            } catch (e) {
+                if(e) throw e;
+            }
+        }
+    }
+    
 
     render() {
         let locationArr = this.props.feed.district.split(" ");
         let location = `${locationArr[1]} ${locationArr[2]}`;
+        console.log(this.state.userId);
+        let iconName = (this.props.feed.likes.indexOf(this.state.userId) > -1) ? 'ios-heart' : 'ios-heart-outline';
 
-        console.log(this.state);
         return (
             <TouchableWithoutFeedback onPress={() => this.toggleModal(this.props.index)}>
                 <View style={styles.commentItems}>
@@ -158,8 +215,8 @@ class FeedItem extends Component {
                                     backgroundColor: 'white',
                                     width: 70,
                                     height: 10,
-                                    marginTop: -24,
-                                    marginBottom: 14,
+                                    marginTop: -32,
+                                    marginBottom: 22,
                                     alignSelf: 'center',
                                     borderRadius: 7,
                                 }}>
@@ -185,15 +242,27 @@ class FeedItem extends Component {
                                 </View>
                                 <View style={styles.modalMessageContainer}>
                                     <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                                    {/* TODO: Image Gallery */}
+                                    <TouchableWithoutFeedback onPress={this.renderGallery}>
+                                    <Image
+                                        source={{uri: this.props.feed.feed_pic_url}}
+                                        style={styles.modalFeedImage}
+                                    />
+                                    </TouchableWithoutFeedback>
                                 </View>
                                 <View style={styles.modalIconContainer}>
-                                        <Icon name="ios-heart" size={10}></Icon><Text style={styles.iconText}>20</Text>
-                                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>20</Text>
+                                        <TouchableOpacity onPress={this.likePress}>
+                                            <View style={{flexDirection: 'row'}}><Icon name={iconName} size={10} style={{color: '#ffa751'}}></Icon><Text style={styles.iconText}>{this.props.feed.likes.length}</Text></View>
+                                        </TouchableOpacity>
+                                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>{this.props.feed.comment.length}</Text>
                                 </View>
                                 <View style={styles.modalCommentContainer}>
-
+                                    {this.renderComments(this.props.feed.comment)}
                                 </View>
                             </Animated.View>
+                            <CommentUpload
+                                commentSubmit={this.commentSubmit}
+                            />
                         </View>
                     </Modal>
                     <View style={styles.commentMidContainer}>
@@ -217,10 +286,14 @@ class FeedItem extends Component {
                     </View>
                     <View style={styles.messageContainer}>
                         <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                        <Image
+                            source={{uri: this.props.feed.feed_pic_url}}
+                            style={styles.feedImage}
+                        />
                     </View>
                     <View style={styles.iconContainer}>
-                        <Icon name="ios-heart" size={10}></Icon><Text style={styles.iconText}>20</Text>
-                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>20</Text>
+                        <Icon name={iconName} size={10} style={{color: '#ffa751'}}></Icon><Text style={styles.iconText}>{this.props.feed.likes.length}</Text>
+                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>{this.props.feed.comment.length}</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -293,10 +366,15 @@ const styles = StyleSheet.create({
     },
     modalCommentContainer: {
         flex: 0.56,
-        backgroundColor: 'yellow'
+        backgroundColor: 'white'
     },
     modalCommentItem: {
 
+    },
+    modalFeedImage: {
+        width: 70,
+        height: 70,
+        marginTop: 20,
     },
     messageContainer: {
         flex: 0.6,
@@ -306,6 +384,11 @@ const styles = StyleSheet.create({
     commentMessege: {
         fontSize: 12,
         color: '#3f4c6b',
+    },
+    feedImage: {
+        width: 30,
+        height: 30,
+        alignSelf: 'flex-end'
     },
     iconContainer: {
         paddingLeft: 45,
