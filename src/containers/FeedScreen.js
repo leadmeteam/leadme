@@ -5,6 +5,7 @@ import {
     View,
     Animated,
     Easing,
+    Modal,
     StyleSheet,
     StatusBar,
 } from 'react-native';
@@ -14,6 +15,7 @@ import {
     Header,
     SideDate,
     FeedList,
+    Search,
 } from '../components';
 
 import * as uiDuck from '../ducks/ui.duck';
@@ -26,6 +28,10 @@ StatusBar.setBarStyle('light-content', true);       // 상태바 글자 흰색
 class FeedScreen extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            modalVisible: false
+        };
+
         this.springValue = new Animated.Value(1);
     }
 
@@ -34,7 +40,11 @@ class FeedScreen extends Component {
     }
 
     handleOnPress = () => {
-        console.log('pressed');
+        // console.log(this.props.navigation);
+        // this.props.navigation.navigate('Search');
+        this.setState({
+            modalVisible: !this.state.modalVisible
+        });
     }
 
     springAnim = (index) => {
@@ -62,6 +72,18 @@ class FeedScreen extends Component {
                         title={"FEED"}
                         handlePress={this.handleOnPress}
                     />
+                    <Modal
+                        animationType="slide"
+                        visible={this.state.modalVisible}
+                    >
+                        <Search
+                            closeModal={this.handleOnPress}
+                            FeedActions={this.props.FeedActions}
+                            valid={this.props.valid.searchFeed}
+                            searchFeeds={this.props.searchFeeds}
+                            status={this.props.status.searchFeed}
+                        />
+                    </Modal>
                     <View style={styles.midContainer}>
                         <SideDate />
                         <FeedList
@@ -112,12 +134,15 @@ export default connect(
             firstList: state.feed.getIn(['requests', 'getFirstFeedList']),
             feedPost: state.feed.getIn(['requests', 'postFeedComment']),
             newList: state.feed.getIn(['requests', 'getNewFeedList']),
+            searchFeed: state.feed.getIn(['requests', 'searchFeed']),
         },
         valid: {
             firstList: state.feed.getIn(['valid', 'firstFeedList']),
+            searchFeed: state.feed.getIn(['valid', 'searchFeed'])
         },
         authInfo: state.auth.get('authInfo'),
         feeds: state.feed.get('feeds'),
+        searchFeeds: state.feed.get('searchFeeds'),
         currentIndex: state.ui.get('currentIndex'),
     }),
     dispatch => ({

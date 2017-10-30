@@ -99,3 +99,12 @@ export const requestToggleLikeFeed = async (feedId) => {
         if(e) throw e;
     }
 }
+
+export const requestSearchFeed = async (qs) => {
+    return axios.get(`${ROOT_URL}/feeds/search/${qs}`)
+                .then(res => {
+                    return res;
+                }).catch(err => {
+                    if(err) throw err;
+                });
+}

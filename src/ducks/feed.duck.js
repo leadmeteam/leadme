@@ -10,6 +10,7 @@ const UPDATE_FEED = "feed/UPDATE_FEED";
 const REMOVE_FEED = "feed/POST_REMOVE";
 const POST_FEED_COMMENT = "feed/POST_FEED_COMMENT";
 const REMOVE_FEED_COMMENT = "feed/REMOVE_FEED_COMMENT";
+const SEARCH_FEED = "feed/SEARCH_FEED";
 
 export const postFeed = (district, feedBody, photoUrl) => ({
     type: POST_FEED,
@@ -46,6 +47,11 @@ export const removeFeedComment = (feedId, commentId) => ({
     payload: feed.requestRemoveFeedComment(feedId, commentId)
 });
 
+export const searchFeed = (qs) => ({
+    type: SEARCH_FEED,
+    payload: feed.requestSearchFeed(qs)
+});
+
 const initialState = fromJS({
     requests: {
         postFeed: {
@@ -71,14 +77,19 @@ const initialState = fromJS({
         },
         removeFeedComment: {
             ...rs.request
-        }
+        },
+        searchFeed: {
+            ...rs.request
+        },
     },
     valid: {
         firstFeedList: false,
         newFeedList: false,
-        feedDetail: false
+        feedDetail: false,
+        searchFeed: false,
     },
-    feeds: []
+    feeds: [],
+    searchFeeds: []
 });
 
 export default function reducer(state = initialState, action) {
@@ -116,6 +127,15 @@ export default function reducer(state = initialState, action) {
             return state.mergeIn(['requests', 'toggleLikeFeed'], fromJS(rs.fulfilled));
         case `${TOGGLE_LIKE_FEED}_REJECTED`:
             return state.mergeIn(['requests', 'toggleLikeFeed'], fromJS(rs.rejected));
+        case `${SEARCH_FEED}_PENDING`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.pending));
+        case `${SEARCH_FEED}_FULFILLED`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.fulfilled))
+                        .setIn(['valid', 'searchFeed'], true)
+                        .set('searchFeeds', fromJS(action.payload.data));
+        case `${SEARCH_FEED}_REJECTED`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.rejected))
+                        .setIn(['valid', 'searchFeed'], false);
         default:
             return state;
     }
