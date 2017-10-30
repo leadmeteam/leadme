@@ -117,7 +117,7 @@ class GuideList extends Component {
 
 const styles = StyleSheet.create({
     listContainer: {
-        paddingTop: 20,
+        paddingTop: 25,
         flex: 1,
     }
 });

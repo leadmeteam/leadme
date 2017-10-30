@@ -21,7 +21,7 @@ const TabNav = TabNavigator(
       path: 'feed',
       navigationOptions: {
         header: null,
-        title: '피드'
+        title: 'FEED'
       }
     },
     Guide: {
@@ -29,7 +29,7 @@ const TabNav = TabNavigator(
       path: 'guide',
       navigationOptions: {
         header: null,
-        title: '가이드'
+        title: 'GUIDE'
       }
     },
     Mypage: {
@@ -37,21 +37,21 @@ const TabNav = TabNavigator(
       path: 'mypage',
       navigationOptions: {
         header: null,
-        title: '마이페이지'
+        title: 'MY'
       }
     }
   },
   {
     tabBarOptions: {
-      activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#fff',
+      activeTintColor: Platform.OS === 'ios' ? '#ffa751' : '#fff',
       labelStyle: {
-        fontSize: 14
+        fontSize: 12
       },
       showIcon: false,
       animationEnabled: true,
       tabStyle: {
-        borderTopColor: '#ffa751',
-        borderTopWidth: 0.5
+        // borderTopColor: '#ffa751',
+        // borderTopWidth: 0
       }
     },
     lazy: true

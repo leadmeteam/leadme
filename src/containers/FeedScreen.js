@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffa751',
     },
     midContainer: {
-        flex: 0.87,
+        flex: 1,
         flexDirection: 'row',
     },
     gradient: {

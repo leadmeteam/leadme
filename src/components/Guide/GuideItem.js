@@ -6,7 +6,9 @@ import {
     StyleSheet
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Star from '../../components/Guide/Star'
+import Star from '../../components/Guide/Star';
+import LangLevel from '../../components/Guide/LangLevel';
+import License from '../../components/Guide/License';
 
 
 class GuideItem extends Component {
@@ -35,11 +37,15 @@ class GuideItem extends Component {
                         </View>
                         <View style={styles.contentWrapper}>
                             <Text style={styles.contentTitle}>능력</Text>
-                            <Text style={styles.contentText}>상 중 하</Text>
+                            <LangLevel 
+                                level={2}
+                            />
                         </View>
                         <View style={styles.contentWrapper}>
                             <Text style={styles.contentTitle}>자격증</Text>
-                            <Text style={styles.contentText}>있음 없음</Text>
+                            <License
+                                have={0}
+                            />
                         </View>
                     </View>
                 </View>
@@ -71,16 +77,18 @@ const styles = StyleSheet.create({
         },
             phototitleConatiner: {
                 flexDirection: 'row',
-                marginBottom: -25,
+                marginBottom: -15,
             },
                 imageWrapper: {
                     position: 'relative',
                     bottom: 35,
-                    width: 70,
-                    height: 70,
+                    // width: 70,
+                    // height: 70,
                 },
                     guideImage: {
-                        borderRadius: 30,
+                        width: 65,
+                        height: 65,
+                        borderRadius: 32.5,
                     },
                 guideNameWrapper: {
                     fontSize: 22,
@@ -95,7 +103,6 @@ const styles = StyleSheet.create({
                 marginTop: 20,
                 flex: 1,
                 marginLeft: 16,
-                flexDirection: 'column'
             },
                 contentWrapper: {
                     flexDirection: 'row',
@@ -103,13 +110,11 @@ const styles = StyleSheet.create({
                 },
                     contentTitle: {
                         fontSize: 12,
-                        flex: 0.15,
+                        width: 60,
                         color: '#3f4c6b',
                     },
                     contentText: {
                         fontSize: 12,
-                        flex: 0.85,
-                        marginLeft: 10,
                         color: '#3f4c6b',
                     },
         guideSideContainer: {
