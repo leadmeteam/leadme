@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    ScrollView,
+    FlatList,
     View,
     Text,
     Image,
@@ -32,46 +32,53 @@ class FeedList extends Component {
         const { FeedActions } = this.props;
         try {
             await FeedActions.getFirstFeedList();
+            
         } catch (e) {
             if(e) throw e;
         }
     }
 
-    renderFeeds = (datas) => {
-        const mappedFeed = datas.map((feed, index) => {
-            return <FeedItem
-                        key={feed._id + ',' + index}
-                        index={index}
-                        feed={feed}
-                        onFeedPress={this.props.onFeedPress}
-                        feedScale={this.props.feedScale}
-                        currentIndex={this.props.currentIndex}
-                    />;
-        });
+    renderFeeds = ({item, index}) => (
+        <FeedItem
+            key={item._id + ',' + index}
+            index={index}
+            feed={item}
+            onFeedPress={this.props.onFeedPress}
+            feedScale={this.props.feedScale}
+            currentIndex={this.props.currentIndex}
+        />
+    )
 
-        return mappedFeed;
+    renderMoreFeeds = () => {
+        console.log('end reached');
     }
+
+    keyExtractor = (item, index) => item._id;
 
     render() {
         const emptyComponent = undefined;
-
+        console.log(this.props.feeds.toJS());
         return (
-            <ScrollView
-                style={styles.commentContainer}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.handleRefresh}
-                    />
-                }
-            >
+            <View style={styles.commentContainer}>
                 <FeedUpload
                     postStatus={this.props.postStatus}
                     FeedActions={this.props.FeedActions}
                     authInfo={this.props.authInfo}
                 />
-                { this.props.listValid.firstList ? this.renderFeeds(this.props.feeds) : emptyComponent }
-            </ScrollView>
+                { this.props.listValid.firstList ? <FlatList
+                    data={this.props.feeds.toJS()}
+                    renderItem={this.renderFeeds}
+                    keyExtractor={this.keyExtractor}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.handleRefresh}
+                        />
+                    }
+                    onEndReached={this.renderMoreFeeds}
+                /> : emptyComponent }
+                
+            </View>
         );
     }
 }

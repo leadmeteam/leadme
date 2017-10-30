@@ -9,6 +9,10 @@ import {
     TouchableWithoutFeedback,
     PanResponder,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import Material from 'react-native-vector-icons/MaterialIcons';
+
 import { TimeAgo } from '../';
 import clamp from 'clamp';
 
@@ -115,7 +119,7 @@ class FeedItem extends Component {
     }
 
     render() {
-        let locationArr = this.props.feed.get('district').split(" ");
+        let locationArr = this.props.feed.district.split(" ");
         let location = `${locationArr[1]} ${locationArr[2]}`;
 
         console.log(this.state);
@@ -129,7 +133,7 @@ class FeedItem extends Component {
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         onShow={this.onModalShow}
                     >
-                        <View style={{flex: 1, backgroundColor: 'rgba(0,0,0, 0.5)'}}>
+                        <View style={styles.modalContainer}>
                             <Animated.View
                                 style={[{
                                     backgroundColor: 'white',
@@ -150,27 +154,44 @@ class FeedItem extends Component {
                                 }]}
                                 {...this.panResponder.panHandlers}
                             >
-                                <View style={styles.commentMidContainer}>
+                                <View style={{
+                                    backgroundColor: 'white',
+                                    width: 70,
+                                    height: 10,
+                                    marginTop: -24,
+                                    marginBottom: 14,
+                                    alignSelf: 'center',
+                                    borderRadius: 7,
+                                }}>
+                                </View>
+                                <View style={styles.modalProfileContainer}>
                                     <View>
                                         <Image
-                                            source={{uri: this.props.feed.getIn(['writer', 'pic_url'])}}
+                                            source={{uri: this.props.feed.writer.pic_url}}
                                             style={styles.commentPhoto}
                                         />
                                     </View>
                                     <View style={styles.commentTitle}>
                                         <View style={{flex: 1}}>
                                             <Text style={styles.commentName}>
-                                                {this.props.feed.getIn(['writer', 'first_name']) + this.props.feed.getIn(['writer', 'last_name'])}
+                                                {`${this.props.feed.writer.first_name} ${this.props.feed.writer.last_name}`}
                                             </Text>
                                         </View>
                                         <View style={styles.commentLocTime}>
-                                            <Text style={styles.commentLocation}>⚲ {location}</Text>
-                                            <Text style={styles.commentTime}><TimeAgo time={this.props.feed.get('createdDate')} /></Text>
+                                            <Text style={styles.commentLocation}><Material name="location-on"></Material>  {location}</Text>
+                                            <Text style={styles.commentTime}><TimeAgo time={this.props.feed.createdDate} /></Text>
                                         </View>
                                     </View>
                                 </View>
-                                <View style={styles.messageContainer}>
-                                    <Text style={styles.commentMessege}>{this.props.feed.get('feedBody')}</Text>
+                                <View style={styles.modalMessageContainer}>
+                                    <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                                </View>
+                                <View style={styles.modalIconContainer}>
+                                        <Icon name="ios-heart" size={10}></Icon><Text style={styles.iconText}>20</Text>
+                                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>20</Text>
+                                </View>
+                                <View style={styles.modalCommentContainer}>
+
                                 </View>
                             </Animated.View>
                         </View>
@@ -178,24 +199,28 @@ class FeedItem extends Component {
                     <View style={styles.commentMidContainer}>
                         <View>
                             <Image
-                                source={{uri: this.props.feed.getIn(['writer', 'pic_url'])}}
+                                source={{uri: this.props.feed.writer.pic_url}}
                                 style={styles.commentPhoto}
                             />
                         </View>
                         <View style={styles.commentTitle}>
                             <View style={{flex: 1}}>
                                 <Text style={styles.commentName}>
-                                    {this.props.feed.getIn(['writer', 'first_name']) + this.props.feed.getIn(['writer', 'last_name'])}
+                                    {`${this.props.feed.writer.first_name} ${this.props.feed.writer.last_name}`}
                                 </Text>
                             </View>
                             <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ {location}</Text>
-                                <Text style={styles.commentTime}><TimeAgo time={this.props.feed.get('createdDate')} /></Text>
+                                <Text style={styles.commentLocation}><Material name="location-on"></Material> {location}</Text>
+                                <Text style={styles.commentTime}><TimeAgo time={this.props.feed.createdDate} /></Text>
                             </View>
                         </View>
                     </View>
                     <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>{this.props.feed.get('feedBody')}</Text>
+                        <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="ios-heart" size={10}></Icon><Text style={styles.iconText}>20</Text>
+                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>20</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -210,16 +235,16 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         marginBottom: 8,
         padding: 16,
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     commentPhoto: {
         width: 35,
         height: 35,
-        borderRadius: 17.5
+        borderRadius: 17.5,
     },
     commentMidContainer: {
-        flex: 0.35,
-        flexDirection: 'row'
+        flex: 0.4,
+        flexDirection: 'row',
     },
     commentTitle: {
         flex: 1,
@@ -231,26 +256,66 @@ const styles = StyleSheet.create({
     },
     commentLocTime: {
         flex: 1,
+        marginTop: 6,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     commentLocation: {
         fontSize: 10,
-        color: '#3f4c6b'
+        color: '#3f4c6b',
     },
     commentTime: {
         fontSize: 10,
-        color: '#3f4c6b'
+        color: '#3f4c6b',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#ffa751',
+        paddingTop: 75,
+        paddingBottom: 50,
+    },
+    modalProfileContainer: {
+        flex: 0.08,
+        flexDirection: 'row',
+    },
+    modalMessageContainer: {
+        flex: 0.36,
+        marginTop: 8,
+        paddingLeft: 45,
+    },
+    modalIconContainer: {
+        paddingLeft: 45,
+        paddingBottom: 25,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderBottomWidth: 0.25,
+        borderBottomColor: '#888',
+    },
+    modalCommentContainer: {
+        flex: 0.56,
+        backgroundColor: 'yellow'
+    },
+    modalCommentItem: {
+
     },
     messageContainer: {
-        flex: 0.65,
+        flex: 0.6,
         marginTop: 8,
-        marginLeft: 45
+        marginLeft: 45,
     },
     commentMessege: {
         fontSize: 12,
         color: '#3f4c6b',
     },
+    iconContainer: {
+        paddingLeft: 45,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    iconText: {
+        paddingLeft: 3,
+        fontSize: 10,
+    }
 });
 
 export default FeedItem;
