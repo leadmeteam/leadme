@@ -7,5 +7,5 @@ export {
     LoginScreen,
     GuideScreen,
     FeedScreen,
-    MypageScreen
+    MypageScreen,
 };

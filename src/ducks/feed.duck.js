@@ -5,17 +5,16 @@ import * as feed from '../services/API/feed';
 const POST_FEED = "feed/POST_FEED";
 const GET_FIRST_FEED_LIST = "feed/GET_FIRST_FEED_LIST";
 const GET_NEW_FEED_LIST = "feed/GET_NEW_FEED_LIST";
-const GET_FEED_DETAIL = "feed/GET_FEED_DETAIL";
 const TOGGLE_LIKE_FEED = "feed/LIKE_FEED";
 const UPDATE_FEED = "feed/UPDATE_FEED";
 const REMOVE_FEED = "feed/POST_REMOVE";
 const POST_FEED_COMMENT = "feed/POST_FEED_COMMENT";
-const GET_FEED_COMMENT_LIST = "feed/GET_FEED_COMMENT_LIST";
 const REMOVE_FEED_COMMENT = "feed/REMOVE_FEED_COMMENT";
+const SEARCH_FEED = "feed/SEARCH_FEED";
 
-export const postFeed = (district, feedBody) => ({
+export const postFeed = (district, feedBody, photoUrl) => ({
     type: POST_FEED,
-    payload: feed.requestPostFeed(district, feedBody)
+    payload: feed.requestPostFeed(district, feedBody, photoUrl)
 });
 
 export const getFirstFeedList = () => ({
@@ -23,19 +22,9 @@ export const getFirstFeedList = () => ({
     payload: feed.requestFirstFeedList()
 });
 
-export const getNewFeedList = (lastFeedId) => ({
-    type: GET_NEW_FEED_LIST,
-    payload: feed.requestNewFeedList()
-});
-
-export const getFeedDetail = (feedId) => ({
-    type: GET_FEED_DETAIL,
-    payload: feed.requestGetFeedDetail()
-});
-
 export const toggleLikeFeed = (feedId) => ({
     type: TOGGLE_LIKE_FEED,
-    payload: feed.requestToggleLikeFeed()
+    payload: feed.requestToggleLikeFeed(feedId)
 });
 
 export const updateFeed = (feedId) => ({
@@ -48,19 +37,19 @@ export const removeFeed = (feedId) => ({
     payload: feed.requestRemoveFeed()
 });
 
-export const postFeedComment = (feedId) => ({
+export const postFeedComment = (feedId, comment) => ({
     type: POST_FEED_COMMENT,
-    payload: feed.requestPostFeedComment()
+    payload: feed.requestPostFeedComment(feedId, comment)
 });
 
-export const getFeedCommentList = (feedId) => ({
-    type: GET_FEED_COMMENT_LIST,
-    payload: feed.requestGetFeedCommentList()
-});
-
-export const removeFeedComment = (feedId) => ({
+export const removeFeedComment = (feedId, commentId) => ({
     type: REMOVE_FEED_COMMENT,
-    payload: feed.requestRemoveFeedComment()
+    payload: feed.requestRemoveFeedComment(feedId, commentId)
+});
+
+export const searchFeed = (qs) => ({
+    type: SEARCH_FEED,
+    payload: feed.requestSearchFeed(qs)
 });
 
 const initialState = fromJS({
@@ -72,9 +61,6 @@ const initialState = fromJS({
             ...rs.request
         },
         getNewFeedList: {
-            ...rs.request
-        },
-        getFeedDetail: {
             ...rs.request
         },
         toggleLikeFeed: {
@@ -89,19 +75,21 @@ const initialState = fromJS({
         postFeedComment: {
             ...rs.request
         },
-        getFeedCommentList: {
-            ...rs.request
-        },
         removeFeedComment: {
             ...rs.request
-        }
+        },
+        searchFeed: {
+            ...rs.request
+        },
     },
     valid: {
         firstFeedList: false,
         newFeedList: false,
-        feedDetail: false
+        feedDetail: false,
+        searchFeed: false,
     },
-    feeds: []
+    feeds: [],
+    searchFeeds: []
 });
 
 export default function reducer(state = initialState, action) {
@@ -121,6 +109,33 @@ export default function reducer(state = initialState, action) {
         case `${GET_FIRST_FEED_LIST}_REJECTED`:
             return state.mergeIn(['requests', 'getFirstFeedList'], fromJS(rs.rejected))
                         .setIn(['valid', 'firstFeedList'], false);
+        case `${POST_FEED_COMMENT}_PENDING`:
+            return state.mergeIn(['requests', 'postFeedComment'], fromJS(rs.pending));
+        case `${POST_FEED_COMMENT}_FULFILLED`:
+            return state.mergeIn(['requests', 'postFeedComment'], fromJS(rs.fulfilled));
+        case `${POST_FEED_COMMENT}_REJECTED`:
+            return state.mergeIn(['requests', 'postFeedComment'], fromJS(rs.rejected));
+        case `${REMOVE_FEED_COMMENT}_PENDING`:
+            return state.mergeIn(['requests', 'removeFeedComment'], fromJS(rs.pending));
+        case `${REMOVE_FEED_COMMENT}_FULFILLED`:
+            return state.mergeIn(['requests', 'removeFeedComment'], fromJS(rs.pending));
+        case `${REMOVE_FEED_COMMENT}_REJECTED`:
+            return state.mergeIn(['requests', 'removeFeedComment'], fromJS(rs.rejected));
+        case `${TOGGLE_LIKE_FEED}_PENDING`:
+            return state.mergeIn(['requests', 'toggleLikeFeed'], fromJS(rs.pending));
+        case `${TOGGLE_LIKE_FEED}_FULFILLED`:
+            return state.mergeIn(['requests', 'toggleLikeFeed'], fromJS(rs.fulfilled));
+        case `${TOGGLE_LIKE_FEED}_REJECTED`:
+            return state.mergeIn(['requests', 'toggleLikeFeed'], fromJS(rs.rejected));
+        case `${SEARCH_FEED}_PENDING`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.pending));
+        case `${SEARCH_FEED}_FULFILLED`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.fulfilled))
+                        .setIn(['valid', 'searchFeed'], true)
+                        .set('searchFeeds', fromJS(action.payload.data));
+        case `${SEARCH_FEED}_REJECTED`:
+            return state.mergeIn(['requests', 'searchFeed'], fromJS(rs.rejected))
+                        .setIn(['valid', 'searchFeed'], false);
         default:
             return state;
     }

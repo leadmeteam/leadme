@@ -4,7 +4,8 @@ import{
     View,
     Text,
     StyleSheet,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableOpacity,
 } from 'react-native';
 
 import Header from '../Common/Header';
@@ -15,7 +16,7 @@ class FeedUpload extends Component {
         super(props);
 
         this.state = {
-            modalVisible: false
+            modalVisible: false,
         };
     }
     

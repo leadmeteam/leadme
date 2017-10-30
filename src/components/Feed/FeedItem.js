@@ -6,11 +6,21 @@ import {
     Image,
     StyleSheet,
     Modal,
+    AsyncStorage,
+    TouchableOpacity,
+    TouchableHighlight,
     TouchableWithoutFeedback,
     PanResponder,
 } from 'react-native';
-import { TimeAgo } from '../';
+
 import clamp from 'clamp';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import Material from 'react-native-vector-icons/MaterialIcons';
+
+import { TimeAgo } from '../';
+import CommentItem from './CommentItem';
+import CommentUpload from './CommentUpload';
 
 const SWIPE_DOWN_THRESHOLD = 250;
 
@@ -20,6 +30,7 @@ class FeedItem extends Component {
 
         this.state = {
             modalVisible: false,
+            userId: '',
             transform: {
                 translateX: 0,
                 translateY: 0,
@@ -36,9 +47,9 @@ class FeedItem extends Component {
     componentWillMount() {
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => true,
-            onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+            onStartShouldSetPanResponderCapture: (evt, gestureState) => {},
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+            onMoveShouldSetPanResponderCapture: (evt, gestureState) => {},
             onPanResponderGrant: (evt, gestureState) => {
                 // The gesture has started. Show visual feedback so the user knows
                 // what is happening!
@@ -93,6 +104,17 @@ class FeedItem extends Component {
         });
     }
 
+    async componentDidMount() {
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            this.setState({
+                userId: userId
+            });
+        } catch (e) {
+            if(e) throw e;
+        }
+    }
+
     onModalShow = () => {
         this.setState({
             transform: {
@@ -102,10 +124,6 @@ class FeedItem extends Component {
         });
     }
 
-    feedPress = (e) => {
-        console.log(e.nativeEvent);
-    }
-
     toggleModal = (index) => {
         this.setState({
             modalVisible: !this.state.modalVisible
@@ -113,12 +131,55 @@ class FeedItem extends Component {
 
         this.props.onFeedPress(index);
     }
+    
+
+    likePress = async () => {
+        const { FeedActions } = this.props;
+        try {
+            await FeedActions.toggleLikeFeed(this.props.feed._id);
+            await FeedActions.getFirstFeedList();
+        } catch (e) {
+            if(e) throw e;
+        }
+        
+    }
+
+    renderComments = (comments) => {
+        let mappedData = comments.map((comment, index) => {
+            return (<CommentItem
+                        feedId={this.props.feed._id}
+                        FeedActions={this.props.FeedActions}
+                        closeModal={this.toggleModal}
+                        comment={comment}
+                        key={index}
+                    />);
+        });
+        
+        return mappedData;
+    }
+
+    commentSubmit = async (comment) => {
+        const { FeedActions } = this.props;
+        if(comment !== '') {
+            try {
+                await FeedActions.postFeedComment(this.props.feed._id, comment);
+                if(this.props.postStatus.get('fetched')) {
+                    // TODO: request New List
+                    await FeedActions.getFirstFeedList();
+                }
+            } catch (e) {
+                if(e) throw e;
+            }
+        }
+    }
+    
 
     render() {
-        let locationArr = this.props.feed.get('district').split(" ");
+        let locationArr = this.props.feed.district.split(" ");
         let location = `${locationArr[1]} ${locationArr[2]}`;
+        console.log(this.state.userId);
+        let iconName = (this.props.feed.likes.indexOf(this.state.userId) > -1) ? 'ios-heart' : 'ios-heart-outline';
 
-        console.log(this.state);
         return (
             <TouchableWithoutFeedback onPress={() => this.toggleModal(this.props.index)}>
                 <View style={styles.commentItems}>
@@ -129,7 +190,7 @@ class FeedItem extends Component {
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         onShow={this.onModalShow}
                     >
-                        <View style={{flex: 1, backgroundColor: 'rgba(0,0,0, 0.5)'}}>
+                        <View style={styles.modalContainer}>
                             <Animated.View
                                 style={[{
                                     backgroundColor: 'white',
@@ -150,52 +211,89 @@ class FeedItem extends Component {
                                 }]}
                                 {...this.panResponder.panHandlers}
                             >
-                                <View style={styles.commentMidContainer}>
+                                <View style={{
+                                    backgroundColor: 'white',
+                                    width: 70,
+                                    height: 10,
+                                    marginTop: -32,
+                                    marginBottom: 22,
+                                    alignSelf: 'center',
+                                    borderRadius: 7,
+                                }}>
+                                </View>
+                                <View style={styles.modalProfileContainer}>
                                     <View>
                                         <Image
-                                            source={{uri: this.props.feed.getIn(['writer', 'pic_url'])}}
+                                            source={{uri: this.props.feed.writer.pic_url}}
                                             style={styles.commentPhoto}
                                         />
                                     </View>
                                     <View style={styles.commentTitle}>
                                         <View style={{flex: 1}}>
                                             <Text style={styles.commentName}>
-                                                {this.props.feed.getIn(['writer', 'first_name']) + this.props.feed.getIn(['writer', 'last_name'])}
+                                                {`${this.props.feed.writer.first_name} ${this.props.feed.writer.last_name}`}
                                             </Text>
                                         </View>
                                         <View style={styles.commentLocTime}>
-                                            <Text style={styles.commentLocation}>⚲ {location}</Text>
-                                            <Text style={styles.commentTime}><TimeAgo time={this.props.feed.get('createdDate')} /></Text>
+                                            <Text style={styles.commentLocation}><Material name="location-on"></Material>  {location}</Text>
+                                            <Text style={styles.commentTime}><TimeAgo time={this.props.feed.createdDate} /></Text>
                                         </View>
                                     </View>
                                 </View>
-                                <View style={styles.messageContainer}>
-                                    <Text style={styles.commentMessege}>{this.props.feed.get('feedBody')}</Text>
+                                <View style={styles.modalMessageContainer}>
+                                    <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                                    {/* TODO: Image Gallery */}
+                                    <TouchableWithoutFeedback onPress={this.renderGallery}>
+                                    <Image
+                                        source={{uri: this.props.feed.feed_pic_url}}
+                                        style={styles.modalFeedImage}
+                                    />
+                                    </TouchableWithoutFeedback>
+                                </View>
+                                <View style={styles.modalIconContainer}>
+                                        <TouchableOpacity onPress={this.likePress}>
+                                            <View style={{flexDirection: 'row'}}><Icon name={iconName} size={10} style={{color: '#ffa751'}}></Icon><Text style={styles.iconText}>{this.props.feed.likes.length}</Text></View>
+                                        </TouchableOpacity>
+                                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>{this.props.feed.comment.length}</Text>
+                                </View>
+                                <View style={styles.modalCommentContainer}>
+                                    {this.renderComments(this.props.feed.comment)}
                                 </View>
                             </Animated.View>
+                            <CommentUpload
+                                commentSubmit={this.commentSubmit}
+                            />
                         </View>
                     </Modal>
                     <View style={styles.commentMidContainer}>
                         <View>
                             <Image
-                                source={{uri: this.props.feed.getIn(['writer', 'pic_url'])}}
+                                source={{uri: this.props.feed.writer.pic_url}}
                                 style={styles.commentPhoto}
                             />
                         </View>
                         <View style={styles.commentTitle}>
                             <View style={{flex: 1}}>
                                 <Text style={styles.commentName}>
-                                    {this.props.feed.getIn(['writer', 'first_name']) + this.props.feed.getIn(['writer', 'last_name'])}
+                                    {`${this.props.feed.writer.first_name} ${this.props.feed.writer.last_name}`}
                                 </Text>
                             </View>
                             <View style={styles.commentLocTime}>
-                                <Text style={styles.commentLocation}>⚲ {location}</Text>
-                                <Text style={styles.commentTime}><TimeAgo time={this.props.feed.get('createdDate')} /></Text>
+                                <Text style={styles.commentLocation}><Material name="location-on"></Material> {location}</Text>
+                                <Text style={styles.commentTime}><TimeAgo time={this.props.feed.createdDate} /></Text>
                             </View>
                         </View>
                     </View>
                     <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessage}>{this.props.feed.get('feedBody')}</Text>
+                        <Text style={styles.commentMessege}>{this.props.feed.feedBody}</Text>
+                        <Image
+                            source={{uri: this.props.feed.feed_pic_url}}
+                            style={styles.feedImage}
+                        />
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name={iconName} size={10} style={{color: '#ffa751'}}></Icon><Text style={styles.iconText}>{this.props.feed.likes.length}</Text>
+                        <Octicons size={10} name="comment" style={{marginLeft: 10}}></Octicons><Text style={styles.iconText}>{this.props.feed.comment.length}</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -210,48 +308,97 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         marginBottom: 8,
         padding: 16,
+        flexDirection: 'column',
+    },
+    commentPhoto: {
+        width: 35,
+        height: 35,
+        borderRadius: 17.5,
+    },
+    commentMidContainer: {
+        flex: 0.4,
+        flexDirection: 'row',
+    },
+    commentTitle: {
+        flex: 1,
+        marginLeft: 10,
         flexDirection: 'column'
     },
-        commentMidContainer: {
-            flex: 0.35,
-            flexDirection: 'row'
-        },
-            commentPhoto: {
-                width: 36,
-                height: 36,
-                borderRadius: 18
-            },
-            commentTitle: {
-                flex: 1,
-                marginLeft: 10,
-                flexDirection: 'column',
-            },
-                commentName: {
-                    fontSize: 18,
-                },
-                commentLocTime: {
-                    marginTop: 5,
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                },
-                    commentLocation: {
-                        fontSize: 10,
-                        color: '#3f4c6b',
-                    },
-                    commentTime: {
-                        fontSize: 10,
-                        color: '#3f4c6b',
-                    },
-        messageContainer: {
-            flex: 0.65,
-            marginTop: 8,
-            marginLeft: 45
-        },
-        commentMessage: {
-            fontSize: 12,
-            color: '#3f4c6b',
-        },
+    commentName: {
+        fontSize: 18,
+    },
+    commentLocTime: {
+        flex: 1,
+        marginTop: 6,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    commentLocation: {
+        fontSize: 10,
+        color: '#3f4c6b',
+    },
+    commentTime: {
+        fontSize: 10,
+        color: '#3f4c6b',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#ffa751',
+        paddingTop: 75,
+        paddingBottom: 50,
+    },
+    modalProfileContainer: {
+        flex: 0.08,
+        flexDirection: 'row',
+    },
+    modalMessageContainer: {
+        flex: 0.36,
+        marginTop: 8,
+        paddingLeft: 45,
+    },
+    modalIconContainer: {
+        paddingLeft: 45,
+        paddingBottom: 25,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderBottomWidth: 0.25,
+        borderBottomColor: '#888',
+    },
+    modalCommentContainer: {
+        flex: 0.56,
+        backgroundColor: 'white'
+    },
+    modalCommentItem: {
+
+    },
+    modalFeedImage: {
+        width: 70,
+        height: 70,
+        marginTop: 20,
+    },
+    messageContainer: {
+        flex: 0.6,
+        marginTop: 8,
+        marginLeft: 45,
+    },
+    commentMessege: {
+        fontSize: 12,
+        color: '#3f4c6b',
+    },
+    feedImage: {
+        width: 30,
+        height: 30,
+        alignSelf: 'flex-end'
+    },
+    iconContainer: {
+        paddingLeft: 45,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    iconText: {
+        paddingLeft: 3,
+        fontSize: 10,
+    }
 });
 
 export default FeedItem;

@@ -1,6 +1,7 @@
 import FeedList from './Feed/FeedList';
 import FeedUpload from './Feed/FeedUpload';
 import SideDate from './Feed/SideDate';
+import Search from './Feed/Search';
 
 import GuideList from './Guide/GuideList';
 
@@ -14,6 +15,7 @@ export {
     SideDate,
     GuideList,
     Header,
+    Search,
     ModalDropdown,
     TimeAgo,
 };
