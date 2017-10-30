@@ -5,36 +5,55 @@ import {
     Image,
     StyleSheet
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Star from '../../components/Guide/Star';
+import LangLevel from '../../components/Guide/LangLevel';
+import License from '../../components/Guide/License';
+
 
 class GuideItem extends Component {
     render() {
         console.log(this.props.guide);
         return (
-            <View style={styles.guideWrapper}>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={styles.imageWrapper}>
-                        <Image source={{uri: "https://images.unsplash.com/photo-1494707924465-e1426acb48cb?auto=format&fit=crop&w=1650&q=60&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D"}} />
+            <View style={styles.guideContainer}>
+                <View style={styles.guideBodyContainer} >
+                    <View style={styles.phototitleConatiner}>
+                        <View style={styles.imageWrapper}>
+                            <Image 
+                                source={require('../../imgs/profile_image.png')}
+                                style={styles.guideImage} />
+                        </View>
+                        <Text style={styles.guideNameWrapper}>Hwan Seob Lee</Text>
                     </View>
-                    <Text>Hwan Seob Lee</Text>
+                    <Text style={styles.introduceWrapper}>구석구석 서울여행 하며 친해져요! :)</Text>
+                    <View style={styles.contentContainer}>
+                        <View style={styles.contentWrapper}>
+                            <Text style={styles.contentTitle}>지역</Text>
+                            <Text style={styles.contentText}>성북구 안암동</Text>
+                        </View>
+                        <View style={styles.contentWrapper}>
+                            <Text style={styles.contentTitle}>언어</Text>
+                            <Text style={styles.contentText}>English</Text>
+                        </View>
+                        <View style={styles.contentWrapper}>
+                            <Text style={styles.contentTitle}>능력</Text>
+                            <LangLevel 
+                                level={2}
+                            />
+                        </View>
+                        <View style={styles.contentWrapper}>
+                            <Text style={styles.contentTitle}>자격증</Text>
+                            <License
+                                have={0}
+                            />
+                        </View>
+                    </View>
                 </View>
-                <Text style={{marginLeft: 16}}>Lorem Ipsum Kalao Vertical Algin 93</Text>
-                <View style={styles.contentContainer}>
-                    <View style={styles.contentWrapper}>
-                        <Text style={styles.contentTitle}>지역</Text>
-                        <Text style={styles.contentText}>성북구 안암동</Text>
-                    </View>
-                    <View style={styles.contentWrapper}>
-                        <Text style={styles.contentTitle}>언어</Text>
-                        <Text style={styles.contentText}>English</Text>
-                    </View>
-                    <View style={styles.contentWrapper}>
-                        <Text style={styles.contentTitle}>능력</Text>
-                        <Text style={styles.contentText}>상 중 하</Text>
-                    </View>
-                    <View style={styles.contentWrapper}>
-                        <Text style={styles.contentTitle}>자격증</Text>
-                        <Text style={styles.contentText}>있음 없음</Text>
-                    </View>
+                <View>
+                    <Star
+                        star={"star"}
+                        rate={3}
+                    />
                 </View>
             </View>
         );
@@ -42,39 +61,66 @@ class GuideItem extends Component {
 }
 
 const styles = StyleSheet.create({
-    guideWrapper: {
-        flex: 1,
-        height: 200,
-        padding: 16,
-        borderRadius: 30,
-        marginBottom: 16,
+    guideContainer: {
         backgroundColor: '#fff',
-    },
-    imageWrapper: {
-        width: 35,
-        height: 35,
-        borderRadius: 17.5,
-    },
-    contentContainer: {
-        marginTop: 16,
         flex: 1,
-        marginLeft: 16,
-    },
-    contentWrapper: {
-        flex: 1,
+        height: 207,
+        padding: 16,
+        paddingTop: 14,
+        borderRadius: 30,
+        marginBottom: 30,
         flexDirection: 'row',
-        paddingBottom: 8,
     },
-    contentTitle: {
-        fontSize: 10,
-        flex: 0.2,
-        alignSelf: 'flex-start',
-    },
-    contentText: {
-        fontSize: 10,
-        flex: 0.8,
-        marginLeft: 10,
-    }
+        guideBodyContainer: {
+            flex: 0.99,
+            flexDirection: 'column',
+        },
+            phototitleConatiner: {
+                flexDirection: 'row',
+                marginBottom: -15,
+            },
+                imageWrapper: {
+                    position: 'relative',
+                    bottom: 35,
+                    // width: 70,
+                    // height: 70,
+                },
+                    guideImage: {
+                        width: 65,
+                        height: 65,
+                        borderRadius: 32.5,
+                    },
+                guideNameWrapper: {
+                    fontSize: 22,
+                    marginLeft: 16,
+                },
+            introduceWrapper: {
+                color: '#3f4c6b',
+                fontSize: 15,
+                marginLeft: 16,
+            },
+            contentContainer: {
+                marginTop: 20,
+                flex: 1,
+                marginLeft: 16,
+            },
+                contentWrapper: {
+                    flexDirection: 'row',
+                    marginBottom: 7,
+                },
+                    contentTitle: {
+                        fontSize: 12,
+                        width: 60,
+                        color: '#3f4c6b',
+                    },
+                    contentText: {
+                        fontSize: 12,
+                        color: '#3f4c6b',
+                    },
+        guideSideContainer: {
+            flex: 0.01,
+        },
+        
 });
 
 export default GuideItem;
