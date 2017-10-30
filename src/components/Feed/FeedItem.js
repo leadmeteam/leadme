@@ -9,7 +9,7 @@ import {
     TouchableWithoutFeedback,
     PanResponder,
 } from 'react-native';
-import TimeAgo from 'react-native-timeago';
+import { TimeAgo } from '../';
 import clamp from 'clamp';
 
 const SWIPE_DOWN_THRESHOLD = 250;

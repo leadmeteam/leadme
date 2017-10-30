@@ -6,6 +6,7 @@ import GuideList from './Guide/GuideList';
 
 import Header from './Common/Header';
 import ModalDropdown from './Common/ModalDropdown';
+import TimeAgo from './Common/TimeAgo';
 
 export {
     FeedList,
@@ -14,4 +15,5 @@ export {
     GuideList,
     Header,
     ModalDropdown,
+    TimeAgo,
 };
