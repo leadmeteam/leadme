@@ -11,13 +11,15 @@ class GuideItem extends Component {
         console.log(this.props.guide);
         return (
             <View style={styles.guideWrapper}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={styles.phototitleConatiner}>
                     <View style={styles.imageWrapper}>
-                        <Image source={{uri: "https://images.unsplash.com/photo-1494707924465-e1426acb48cb?auto=format&fit=crop&w=1650&q=60&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D"}} />
+                        <Image 
+                            source={require('../../imgs/profile_image.png')}
+                            style={styles.guideImage} />
                     </View>
-                    <Text>Hwan Seob Lee</Text>
+                    <Text style={styles.guideNameWrapper}>Hwan Seob Lee</Text>
                 </View>
-                <Text style={{marginLeft: 16}}>Lorem Ipsum Kalao Vertical Algin 93</Text>
+                <Text style={styles.introduceWrapper}>구석구석 서울여행 하며 친해져요! :)</Text>
                 <View style={styles.contentContainer}>
                     <View style={styles.contentWrapper}>
                         <Text style={styles.contentTitle}>지역</Text>
@@ -43,38 +45,57 @@ class GuideItem extends Component {
 
 const styles = StyleSheet.create({
     guideWrapper: {
+        backgroundColor: '#fff',        
         flex: 1,
         height: 200,
         padding: 16,
         borderRadius: 30,
-        marginBottom: 16,
-        backgroundColor: '#fff',
+        marginBottom: 30,
     },
-    imageWrapper: {
-        width: 35,
-        height: 35,
-        borderRadius: 17.5,
-    },
-    contentContainer: {
-        marginTop: 16,
-        flex: 1,
-        marginLeft: 16,
-    },
-    contentWrapper: {
-        flex: 1,
-        flexDirection: 'row',
-        paddingBottom: 8,
-    },
-    contentTitle: {
-        fontSize: 10,
-        flex: 0.2,
-        alignSelf: 'flex-start',
-    },
-    contentText: {
-        fontSize: 10,
-        flex: 0.8,
-        marginLeft: 10,
-    }
+        phototitleConatiner: {
+            flexDirection: 'row',
+            marginBottom: -25,
+        },
+            imageWrapper: {
+                position: 'relative',
+                bottom: 35,
+                width: 70,
+                height: 70,
+            },
+                guideImage: {
+                    borderRadius: 30,
+                },
+            guideNameWrapper: {
+                fontSize: 21,
+                marginLeft: 16,
+            },
+        introduceWrapper: {
+            color: '#3f4c6b',
+            fontSize: 17,
+            marginLeft: 16,
+        },
+        contentContainer: {
+            marginTop: 16,
+            flex: 1,
+            marginLeft: 16,
+        },
+            contentWrapper: {
+                flex: 1,
+                flexDirection: 'row',
+                paddingBottom: 8,
+            },
+                contentTitle: {
+                    fontSize: 12,
+                    flex: 0.2,
+                    alignSelf: 'flex-start',
+                    color: '#3f4c6b',
+                },
+                contentText: {
+                    fontSize: 12,
+                    flex: 0.8,
+                    marginLeft: 10,
+                    color: '#3f4c6b',
+                }
 });
 
 export default GuideItem;

@@ -195,7 +195,7 @@ class FeedItem extends Component {
                         </View>
                     </View>
                     <View style={styles.messageContainer}>
-                        <Text style={styles.commentMessege}>{this.props.feed.get('feedBody')}</Text>
+                        <Text style={styles.commentMessage}>{this.props.feed.get('feedBody')}</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -212,45 +212,46 @@ const styles = StyleSheet.create({
         padding: 16,
         flexDirection: 'column'
     },
-    commentPhoto: {
-        width: 35,
-        height: 35,
-        borderRadius: 17.5
-    },
-    commentMidContainer: {
-        flex: 0.35,
-        flexDirection: 'row'
-    },
-    commentTitle: {
-        flex: 1,
-        marginLeft: 10,
-        flexDirection: 'column'
-    },
-    commentName: {
-        fontSize: 18,
-    },
-    commentLocTime: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    commentLocation: {
-        fontSize: 10,
-        color: '#3f4c6b'
-    },
-    commentTime: {
-        fontSize: 10,
-        color: '#3f4c6b'
-    },
-    messageContainer: {
-        flex: 0.65,
-        marginTop: 8,
-        marginLeft: 45
-    },
-    commentMessege: {
-        fontSize: 12,
-        color: '#3f4c6b',
-    },
+        commentMidContainer: {
+            flex: 0.35,
+            flexDirection: 'row'
+        },
+            commentPhoto: {
+                width: 35,
+                height: 35,
+                borderRadius: 17.5
+            },
+            commentTitle: {
+                flex: 1,
+                marginLeft: 10,
+                flexDirection: 'column',
+            },
+                commentName: {
+                    fontSize: 18,
+                },
+                commentLocTime: {
+                    marginTop: 5,
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                },
+                    commentLocation: {
+                        fontSize: 10,
+                        color: '#3f4c6b',
+                    },
+                    commentTime: {
+                        fontSize: 10,
+                        color: '#3f4c6b',
+                    },
+        messageContainer: {
+            flex: 0.65,
+            marginTop: 8,
+            marginLeft: 45
+        },
+        commentMessage: {
+            fontSize: 12,
+            color: '#3f4c6b',
+        },
 });
 
 export default FeedItem;
