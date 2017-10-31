@@ -109,6 +109,10 @@ class Search extends Component {
                         style={styles.writeWrapper}
                         onChangeText={(text) => this.setState({searchQuery: text})}
                         value={this.state.searchQuery}
+                        clearButtonMode="while-editing"
+                        returnKeyType="done"
+                        onSubmitEditing={this.handleSearchSubmit}
+                        blurOnSubmit={true}
                     />
                     <TouchableOpacity style={{alignSelf: 'center'}} onPress={this.state.searchQuery === '' ? this.props.closeModal : this.handleSearchSubmit}>
                         <Text style={[styles.sendBtn, btnColor]}>{this.state.searchQuery === '' ? '뒤로' : '전송'}</Text>

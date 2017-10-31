@@ -25,6 +25,10 @@ class CommentUpload extends Component {
                     style={styles.writeWrapper}
                     onChangeText={(text) => this.setState({comment: text})}
                     value={this.state.comment}
+                    clearButtonMode="while-editing"
+                    returnKeyType="done"
+                    onSubmitEditing={() => this.props.commentSubmit(this.state.comment)}
+                    blurOnSubmit={true}
                 />
                 <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => this.props.commentSubmit(this.state.comment)}>
                     <Text style={[styles.sendBtn, btnColor]}>전송</Text>

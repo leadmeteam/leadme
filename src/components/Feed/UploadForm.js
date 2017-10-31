@@ -142,6 +142,9 @@ class UploadForm extends Component {
                         placeholder="Any problem on traveling?"
                         multiline
                         onChangeText={(text) => this.setState({feedBody: text})}
+                        clearButtonMode="while-editing"
+                        returnKeyType="done"
+                        blurOnSubmit={true}
                         value={this.state.feedBody}
                     />
                     <TouchableOpacity onPress={this.selectPhotoTapped}>
