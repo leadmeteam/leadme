@@ -54,7 +54,7 @@ class GuideScreen extends Component {
                                     별점순    <Icon name="ios-arrow-down" color={"#fff"} size={14} />
                                 </Text>
                             }
-                            options={['1', '2']}
+                            options={['평점순', '거리순']}
                         />
                     </View>
                     <GuideUpload
