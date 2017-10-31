@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import {
+    GuideUpload,
     GuideList,
     Header,
     ModalDropdown,
@@ -17,10 +18,23 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import * as guideDuck from '../ducks/guide.duck';
+import * as uiDuck from '../ducks/ui.duck';
 
 class GuideScreen extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            modalVisible: false
+        };
+    }
+
+    handleOnPress = () => {
+        // console.log(this.props.navigation);
+        // this.props.navigation.navigate('Search');
+        this.setState({
+            modalVisible: !this.state.modalVisible
+        });
     }
 
     render() {
@@ -43,6 +57,11 @@ class GuideScreen extends Component {
                             options={['1', '2']}
                         />
                     </View>
+                    <GuideUpload
+                        registerStatus={this.props.status.register}
+                        GuideActions={this.props.GuideActions}
+                        authInfo={this.props.authInfo}
+                    />
                     <GuideList />
                 </View>
             </View>
@@ -86,15 +105,18 @@ const styles = StyleSheet.create({
                     fontSize: 14,
                 },
 });
+
 export default connect(
     state => ({
         status: {
             guideList: state.guide.getIn(['requests', 'guideList']),
             register: state.guide.getIn(['requests', 'register'])
         },
-        feeds: state.guide.get('feeds')
+        feeds: state.guide.get('feeds'),
+        authInfo: state.auth.get('authInfo'),
     }),
     dispatch => ({
+        UiActions: bindActionCreators(uiDuck, dispatch),
         GuideActions: bindActionCreators(guideDuck, dispatch)
     })
 )(GuideScreen);
