@@ -1,36 +1,54 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { Header } from '../components';
+import { Header, Profile, LikedScreen, WroteScreen } from '../components';
+import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
 
-function MypageScreen(props) {
-    console.log(props);
+const FirstRoute = () => <View style={[ styles.tabViewContainer, { backgroundColor: '#D7D9DB' } ]} />;
+const SecondRoute = () => <View style={[ styles.tabViewContainer, { backgroundColor: '#D7D9DB' } ]} />;
 
-    return (
-        <View style={styles.mypageContainer}>
-            <Header
-                name={"ios-chatboxes-outline"}
-                title={"MY"}
-            />
-            <View style={styles.profileContainer}>
-                <View style={styles.imageWrapper}>
-                    <Image 
-                        source={require('../imgs/profile_image.png')}
-                        style={styles.guideImage} />
-                </View>
-                <View style={styles.profileWrapper}>
-                    <Text style={styles.profileName}>
-                        Mr.Guide Lee
-                    </Text>
-                    <Text style={styles.profileMail}>
-                        asdfasdf@naver.com
-                    </Text>
-                </View>
+class MypageScreen extends Component {
+    state = {
+        index: 0,
+        routes: [
+            { key: '1', title: '좋아요 한 글' },
+            { key: '2', title: '내가 쓴 글' },
+        ],
+    };
+    
+    _handleIndexChange = index => this.setState({ index });
+    
+    _renderHeader = props => (
+        <TabBar
+            style={{backgroundColor: 'rgba(255,255,255,0.4)'}}
+            indicatorStyle={{backgroundColor: '#ffa751'}}
+            labelStyle={{color: '#fff'}}
+            {...props}
+        />
+    );
+    
+    _renderScene = SceneMap({
+        '1': FirstRoute,
+        '2': SecondRoute,
+    });
+
+    render() {
+        return (
+            <View style={styles.mypageContainer}>
+                <Header
+                    name={"ios-chatboxes-outline"}
+                    title={"MY"}
+                />
+                <Profile />
+                <TabViewAnimated
+                    style={styles.container}
+                    navigationState={this.state}
+                    renderScene={this._renderScene}
+                    renderHeader={this._renderHeader}
+                    onIndexChange={this._handleIndexChange}
+                />
             </View>
-            <View style={styles.tabViewContainer}>
-                <Text>Hello</Text>
-            </View>
-        </View>
-    )
+        )
+    }
 }
 
 const styles = {
@@ -42,36 +60,9 @@ const styles = {
         paddingRight: 8,
         backgroundColor: '#3f4c6b',
     },
-        profileContainer: {
-            // flex: 0.87,
-            flexDirection: 'row',
-            margin: 20,
-        },
-            // imageWrapper: {
-            //     width: 50,
-            //     height: 50,
-            // },
-                guideImage: {
-                    width: 52,
-                    height: 52,
-                    borderRadius: 26,
-                },
-            profileWrapper: {
-                height: 50,
-                flexDirection: 'column',
-                marginLeft: 15,
-            },
-                profileName: {
-                    fontSize: 22,
-                    color: '#ffffff',
-                },
-                profileMail: {
-                    fontSize: 13,
-                    color: '#ffffff',
-                },
-            tabViewContainer: {
-                flex: 1,
-            },
+    tabViewContainer: {
+        flex: 1,
+    },
 }
 
 export default MypageScreen;
